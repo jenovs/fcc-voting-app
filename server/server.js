@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const {mongoose} = require('./db/mongoose');
+
 const app = express();
 
 // parse data in POST and PATCH request bodies and add to req.body
