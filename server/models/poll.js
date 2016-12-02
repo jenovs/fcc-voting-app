@@ -8,12 +8,12 @@ const PollSchema = mongoose.Schema({
     minlength: 1,
     unique: true
   },
-  voteOption: [{
-    name: {
+  votes: [{
+    pick: {
       type: String,
-      required: true,
       trim: true,
-      minlength: 1
+      minlength: 1,
+      default: "Vote!"
     },
     count: {
       type: Number,

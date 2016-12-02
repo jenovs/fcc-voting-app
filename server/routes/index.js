@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const {Poll} = require('./../models/poll');
 const db = require('./../db/queries');
 
 // Get list of all polls
