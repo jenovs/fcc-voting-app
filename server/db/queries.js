@@ -18,14 +18,12 @@ module.exports = {
     }).catch(e => res.status(400).send());
   },
 
+  // Input: name: "Name of the poll", picks: ["Pick1", "Pick2", ...]
   createNewPoll: (req, res) => {
     if (!req.body.name || !req.body.picks || req.body.picks.length < 2) {
       return res.status(400).send();
     }
-
-    const name = req.body.name;
     let votes = [];
-
     try {
       req.body.picks.forEach(pick => {
         votes.push({pick})
@@ -33,7 +31,10 @@ module.exports = {
     } catch (e) {
       res.status(400).send();
     }
-    const poll = new Poll({name, votes});
+    const poll = new Poll({
+      name: req.body.name,
+      votes
+    });
     poll.save().then(doc => {
       res.status(200).send(doc);
     })
