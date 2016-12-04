@@ -57,7 +57,13 @@ module.exports = {
   },
 
   deleteOnePoll: (req, res) => {
-    res.send();
+    Poll.findOneAndRemove({_id: req.params.id})
+    .then(poll => {
+      // if no records deleted
+      if (!poll) return res.status(404).send();
+      res.status(204).send();
+    })
+    .catch(e => res.send(400).send())
   }
 
 }
