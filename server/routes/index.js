@@ -13,6 +13,9 @@ router.post('/polls', db.createNewPoll);
 // Update a poll by id
 router.patch('/polls/:id/:vote', db.votePoll);
 
+// Add vote options to the poll
+router.patch('/polls/:id', db.addPicks);
+
 // Delete poll by id
 router.delete('/polls/:id', db.deleteOnePoll);
 

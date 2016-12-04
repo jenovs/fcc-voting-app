@@ -57,6 +57,21 @@ module.exports = {
     .catch(e => res.status(400).send());
   },
 
+  // Input: picks: ["Pick1", "Pick2", ...]
+  addPicks: (req, res) => {
+    if (!req.body.picks || !req.body.picks[0]) return res.status(400).send();
+    const picks = [];
+    req.body.picks.forEach(pick => picks.push({pick}))
+    Poll.findOneAndUpdate({
+      _id: req.params.id
+    }, {$push: {'votes': {$each: picks}}}, {new: true})
+    .then(doc => {
+      if (!doc) return res.status(404).send();
+      res.status(200).send(doc);
+    })
+    .catch(e => res.status(400).send(e));
+  },
+
   deleteOnePoll: (req, res) => {
     Poll.findOneAndRemove({_id: req.params.id})
     .then(poll => {
