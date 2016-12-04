@@ -6,13 +6,16 @@ module.exports = {
   getAllPolls: (req, res) => {
     Poll.find().select('name votes.pick votes.count votes._id')
       .then(poll => {
-        res.status(200).send({poll});
+        res.status(200).send(poll);
       })
       .catch(e => res.status(400).send());
   },
 
   getOnePoll: (req, res) => {
-    res.send();
+    Poll.find({_id: req.params.id}).then(poll => {
+      if (!poll.length) return res.status(400).send();
+      res.status(200).send(poll[0]);
+    }).catch(e => res.status(400).send());
   },
 
   createNewPoll: (req, res) => {
