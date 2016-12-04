@@ -11,7 +11,7 @@ router.get('/polls/:id', db.getOnePoll);
 router.post('/polls', db.createNewPoll);
 
 // Update a poll by id
-router.patch('/polls/:id', db.updateOnePoll);
+router.patch('/polls/:id/:vote', db.votePoll);
 
 // Delete poll by id
 router.delete('/polls/:id', db.deleteOnePoll);

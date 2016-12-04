@@ -4,7 +4,7 @@ const {Poll} = require('./../models/poll');
 module.exports = {
 
   getAllPolls: (req, res) => {
-    Poll.find().select('-_id name votes.pick votes.count')
+    Poll.find().select('name votes.pick votes.count votes._id')
       .then(poll => {
         res.status(200).send({poll});
       })
@@ -37,8 +37,20 @@ module.exports = {
     .catch(e => res.status(400).send());
   },
 
-  updateOnePoll: (req, res) => {
-    res.send();
+  votePoll: (req, res) => {
+    // the positional $ operator acts as a placeholder
+    // for the first element that matches the query document
+    Poll.findOneAndUpdate({
+      _id: req.params.id,
+      'votes._id': req.params.vote
+    }, {$inc: {'votes.$.count': 1}}, {new: true})
+    .then(doc => {
+      // if no records updated
+      if (!doc) return res.status(400).send();
+
+      res.status(200).send(doc);
+    })
+    .catch(e => res.status(400).send());
   },
 
   deleteOnePoll: (req, res) => {
