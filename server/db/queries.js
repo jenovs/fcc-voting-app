@@ -3,6 +3,7 @@ const {Poll} = require('./../models/poll');
 
 module.exports = {
 
+  // Output: array of objects
   getAllPolls: (req, res) => {
     Poll.find().select('name votes.pick votes.count votes._id')
       .then(poll => {
@@ -11,10 +12,11 @@ module.exports = {
       .catch(e => res.status(400).send());
   },
 
+  // Output: array of one object
   getOnePoll: (req, res) => {
     Poll.find({_id: req.params.id}).then(poll => {
-      if (!poll.length) return res.status(400).send();
-      res.status(200).send(poll[0]);
+      if (!poll.length) return res.status(404).send();
+      res.status(200).send(poll);
     }).catch(e => res.status(400).send());
   },
 
@@ -36,7 +38,7 @@ module.exports = {
       votes
     });
     poll.save().then(doc => {
-      res.status(200).send(doc);
+      res.status(201).send([doc]);
     })
     .catch(e => res.status(400).send());
   },
