@@ -1,3 +1,5 @@
+'use strict'
+
 require('./config/config');
 
 const express = require('express');
@@ -7,6 +9,7 @@ const router = require('./routes/routes');
 const {mongoose} = require('./db/mongoose');
 
 const app = express();
+const port = process.env.PORT;
 
 // parse data in POST and PATCH request bodies and add to req.body
 app.use(bodyParser.json());
@@ -31,8 +34,8 @@ app.use(function (req, res, next) {
 
 app.use('/v1', router)
 
-app.listen(3000, () => {
-  console.log(`Server started on port 3000`);
+app.listen(port, () => {
+  console.log(`Server started on port ${port}`);
 });
 
 module.exports = {app}
