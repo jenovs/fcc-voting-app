@@ -19,7 +19,7 @@ app.disable('x-powered-by');
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   // Request methods you wish to allow
-  // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
   // Request headers you wish to allow
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   // Set to true if you need the website to include cookies in the requests sent
