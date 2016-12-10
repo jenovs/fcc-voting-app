@@ -13,15 +13,19 @@ const PollSchema = mongoose.Schema({
       type: String,
       trim: true,
       minlength: 1,
-      default: "Vote!"
+      default: "Vote Me!"
     },
     count: {
       type: Number,
       default: 0
+    },
+    _creator: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true
     }
   }]
 });
 
 const Poll = mongoose.model('Poll', PollSchema);
 
-module.exports = {Poll};
+module.exports = Poll;
