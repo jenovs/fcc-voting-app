@@ -1,0 +1,113 @@
+<% include ../partials/_head %>
+
+<% include ../partials/_navbar %>
+
+<div id="container" class="container">
+  <div id="alert" class="alert alert-danger"></div>
+  <h2 id="pollName"></h2>
+    <form id="voteForm">
+      <div id="picks"></div>
+    </form>
+    <% if (currentUser) { %>
+    <button type="button" class="btn btn-default btn-md" data-toggle="modal" data-target="#myModal">Add option</button>
+    <% } %>
+    <button type="button" class="btn btn-info btn-md" name="Submit" id="submitBtn">Vote</button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Add option</h4>
+      </div>
+      <div class="modal-body">
+        <form name="create">
+          <label for="">Name: </label>
+          <input type="text" name="name" value="" placeholder="Option" id="addedOption">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="myBtn" class="btn btn-primary" name="button" onClick=addOption()>Create</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div><!-- Modal End -->
+
+
+<script>
+  // console.log('<%= id %>');
+  const id = '<%= id %>'
+  let pollId;
+
+  const renderPoll = (data) => {
+    document.getElementById('pollName').innerHTML = data.name;
+    const picks = document.getElementById('picks');
+    const name = data.name;
+    pollId = data._id;
+    data.votes.forEach(vote => {
+      picks.innerHTML += `<div><label><input name="vote" type="radio" id="${vote._id}" class="pick">${vote.pick}</input></label></div>`
+    });
+    const submit = document.getElementById('submitBtn');
+    const add = document.getElementById('addBtn');
+    submit.addEventListener('click', processVote);
+    if (add) {
+      add.addEventListener('click', addOption)
+    }
+    submit.pollId = pollId;
+  }
+
+  const addOption = () => {
+    console.log('adding', pollId);
+    const addOpt = document.getElementById('addedOption').value
+    console.log('added opt', addOpt);
+
+    axios.patch(`/api/v1/polls/${pollId}`, {picks: addOpt.split(',')})
+      .then(res => {
+        console.log(res);
+        $("#myModal").modal("hide");
+        location.href = `/vote/${pollId}`;
+      })
+      .catch(e => console.log(e));
+
+  }
+
+  const processVote = (e) => {
+    e.preventDefault();
+    const voteId = document.querySelector('input[name="vote"]:checked').id;
+    if (voteId) votePoll(e.target.pollId, voteId);
+  }
+
+  const votePoll = (pollId, voteId) => {
+    const pollUrl = `  <a href="/polls/${pollId}"><strong>Go to results page</strong></a>.`
+    axios.patch(`/api/v1/polls/${pollId}/${voteId}`)
+      .then(res => {
+        if (res.data.error) {
+          const alert = document.getElementById('alert');
+          alert.innerHTML = res.data.error + pollUrl;
+          alert.setAttribute('style', 'visibility: visible');
+          if (res.data.error[0] === 'I') {
+            document.getElementById('login').setAttribute('style', 'background-color: rgb(242, 222, 222); font-weight: bold');
+          }
+          document.getElementById('submitBtn').disabled = true;
+        } else {
+          location.href = `/polls/${res.data._id}`;
+        }
+      })
+      .catch(e => console.log('in catch', e));
+  }
+
+  axios.get(`/api/v1/polls/${id}`)
+    .then(res => {
+      if (res.status !== 200) return;
+      renderPoll(res.data[0]);
+    })
+    .catch(e => console.log(e));
+
+</script>
+
+<% include ../partials/_footer %>

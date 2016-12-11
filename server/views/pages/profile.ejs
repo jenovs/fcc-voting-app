@@ -1,0 +1,87 @@
+<% include ../partials/_head %>
+
+<% include ../partials/_navbar %>
+
+<div class="container">
+  <h1>My polls</h1>
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <!-- Trigger the modal with a button -->
+      <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Add Poll</button>
+
+      <!-- Modal -->
+      <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Add new poll</h4>
+            </div>
+            <div class="modal-body">
+              <form name="create">
+                <label for="">Name of the poll</label>
+                <input type="text" name="name" value="" id="pollName">
+                <br>
+                <label for="">Voting options</label>
+                <input type="text" name="name" value="" placeholder="Option1, Option2" id="pollValues">
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="myBtn" class="btn btn-primary" name="button" onClick=createPoll()>Create</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div><!-- Modal End -->
+
+    </div>
+
+    <div id="panel-body" class="panel-body">
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+const createPoll = () => {
+  const currentUserId = '<%= currentUser._id %>';
+  const name = document.getElementById('pollName').value;
+  const picks = document.getElementById('pollValues').value.split(',');
+
+  axios.post(`/api/v1/polls/`, {name, picks, _creator: currentUserId})
+    .then(res => {
+      $("#myModal").modal("hide");
+      location.href = `/users/${currentUserId}`;
+    })
+    .catch(e => console.log(e));
+}
+
+const deleteOnePoll = (id) => {
+  axios.delete(`/api/v1/polls/${id}`)
+    .then(res => {
+      location.href = `/users/${currentUserId}`;
+    })
+    .catch(e => console.log(e));
+}
+
+const currentUserId = '<%= currentUser._id %>'
+const listPolls = (data) => {
+  const panelBody = document.getElementById('panel-body');
+  data.forEach(poll => {
+    if (poll._creator === currentUserId)
+    panelBody.innerHTML += ` <div><a href="/poll/${poll._id}">${poll.name}</a><button class="btn btn-danger" onClick="deleteOnePoll('${poll._id}')">Delete</button></div>`;
+  })
+}
+
+axios.get('/api/v1/polls')
+  .then(res => {
+    if (typeof res.data == 'object') listPolls(res.data);
+  })
+  .catch(e => console.log(e));
+</script>
+<% include ../partials/_footer %>

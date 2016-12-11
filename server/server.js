@@ -25,6 +25,7 @@ app.set('view engine', 'ejs');
 // parse data in POST and PATCH request bodies and add to req.body
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(express.static(path.join(__dirname, './../public')))
 
 app.disable('x-powered-by');
 

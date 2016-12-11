@@ -1,0 +1,86 @@
+
+<% include ../partials/_head %>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.min.js"></script>
+
+<% include ../partials/_navbar %>
+
+
+<div class="poll-title"  style="text-align: center;">
+  <h2 id="pollName"></h2>
+  </div>
+
+
+
+<div class="chartDiv">
+  <canvas id="myChart"></canvas>
+</div>
+
+<script  type="text/javascript">
+
+// var id = '<%= id %>'
+const pollData = document.getElementById('poll-data');
+const name = document.getElementById('pollName');
+console.log();
+const populatePoll = (pollData) => {
+  const labels = pollData[0].votes.map(vote => vote.pick);
+  const data = pollData[0].votes.map(vote => vote.count);
+  name.innerHTML = pollData[0].name;
+
+  const ctx = document.getElementById("myChart").getContext("2d");
+  // ctx.canvas.height = '10rem';
+
+  var myChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+          labels,
+          datasets: [{
+              label: '# of Votes',
+              data,
+              backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(255, 206, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+                  'rgba(255, 159, 64, 0.2)',
+
+                  'rgba(255, 169, 74, 0.2)',
+                  'rgba(255, 172, 255, 0.2)',
+                  'rgba(255, 216, 106, 0.2)',
+                  'rgba(255, 202, 212, 0.2)',
+                  'rgba(255, 112, 255, 0.2)',
+                  'rgba(255, 169, 84, 0.2)'
+              ],
+              borderColor: [
+                  'rgba(255,99,132,1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(75, 192, 192, 1)',
+                  'rgba(153, 102, 255, 1)',
+                  'rgba(255, 159, 64, 1)'
+              ],
+              borderWidth: 1
+          }]
+      },
+      options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          legend: {
+            labels: {
+              fontSize: 24
+            }
+          }
+      }
+  });
+}
+
+axios.get(`/api/v1/polls/<%= id %>`)
+  .then(res => {
+    // console.log(res.data);
+    populatePoll(res.data)
+  })
+  .catch(e => console.log(e));
+
+</script>
+<% include ../partials/_footer %>

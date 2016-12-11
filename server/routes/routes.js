@@ -5,6 +5,7 @@ const passport = require('passport');
 
 const db = require('./../db/queries');
 const User = require('./../models/user');
+const api = require('./api_v1')
 
 // populate local variables
 router.use((req, res, next) => {
@@ -40,33 +41,32 @@ router.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
-router.get('/users/:username', (req, res, next) => {
-  User.findOne({username: req.params.username}, (err, user) => {
+router.get('/users/:id', (req, res, next) => {
+  User.findOne({_id: req.params.id}, (err, user) => {
     if (err) return next(err);
     if (!user) return next(404);
-    res.render('profile', {user});
+    res.render('pages/profile', {user});
   });
 });
 
 router.get('/', (req, res) => {
-  res.render('index');
-})
-// Get list of all polls
-router.get('/polls', db.getAllPolls)
+  console.log('remoteAddress:', req.connection.remoteAddress);
+  console.log('ip:', req.ip);
+  res.render('pages/index');
+});
 
-// Get specific poll by id
-router.get('/polls/:id', db.getOnePoll);
+router.get('/poll/:id', (req, res) => {
+  res.render('pages/poll', {id: req.params.id});
+});
 
-// Create a new poll
-router.post('/polls', db.createNewPoll);
+router.get('/polls/:id', (req, res) => {
+  res.render('pages/result', {id: req.params.id});
+});
 
-// Update a poll by id
-router.patch('/polls/:id/:vote', db.votePoll);
+router.get('/vote/:id', (req, res) => {
+  res.render('pages/vote', {id: req.params.id});
+});
 
-// Add vote options to the poll
-router.patch('/polls/:id', db.addPicks);
-
-// Delete poll by id
-router.delete('/polls/:id', db.deleteOnePoll);
+router.use('/api/v1', api)
 
 module.exports = router;

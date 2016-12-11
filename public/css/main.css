@@ -1,0 +1,76 @@
+body {
+  user-select: none;
+}
+
+#picks {
+  color: #333;
+  font-size: 2.5rem;
+  line-height: 4rem;
+  margin: auto;
+  margin-top: 2rem;
+  text-align: left;
+  width: 50%;
+}
+
+#picks>div:hover {
+  color: #433;
+  font-size: 2.7rem;
+  background-color: #fafafa;
+}
+
+input[type="radio"] {
+  margin-right: 2rem;
+}
+
+#alert {
+  visibility: hidden;
+}
+
+#greet {
+  cursor: default;
+  color: #777;
+}
+#greet:hover {
+  color: #777;
+}
+
+.login {
+  /*font-size: 1.8rem;*/
+}
+
+#submitBtn:disabled {
+  color: gray;
+}
+
+.chartDiv {
+  margin: auto;
+  width: 100%;
+
+  /*height: 20rem;*/
+}
+
+@media (resolution: 1dppx) {
+  .chartDiv {
+    width: 50%;
+    max-width: 60rem;
+  }
+}
+
+.panel-body {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.container {
+  text-align: center;
+  cursor: default;
+}
+
+.pick {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.pick:hover {
+  background-color: gray;
+}

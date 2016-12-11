@@ -1,0 +1,38 @@
+<% include ../partials/_head %>
+
+<% include ../partials/_navbar %>
+
+<div class="container">
+  <h1>Welcome to Voting App!</h1>
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+    </div>
+
+    <div id="panel-body" class="panel-body">
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+const listPolls = (data) => {
+  const panelBody = document.getElementById('panel-body');
+  data.forEach(poll => {
+    panelBody.innerHTML += `<div><a href="/vote/${poll._id}">${poll.name}</a></div>`;
+  })
+}
+
+axios.get('/api/v1/polls')
+  .then(res => {
+    // console.log(res.data)
+    // console.log(typeof res.data);
+    if (typeof res.data == 'object') listPolls(res.data);
+  })
+  .catch(e => console.log(e));
+
+</script>
+
+<% include ../partials/_footer %>
